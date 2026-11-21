@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://gstatic.com 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *">
+    <title>HC-05 Controller</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+
+    <!-- Top Header -->
+    <header class="app-header">
+        <div class="status-group">
+            <span id="status-dot" class="dot disconnected"></span>
+            <div>
+                <h1 id="device-name">Not Connected</h1>
+                <small id="status-text">Tap Connect to scan HC-05</small>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button id="btn-theme" class="icon-btn" title="Toggle Theme">🌓</button>
+            <button id="btn-edit-mode" class="icon-btn" title="Edit Buttons">✏️</button>
+            <button id="btn-connect" class="primary-btn">Connect</button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-remote">🎮 Remote</button>
+        <button class="tab-btn" data-tab="tab-joystick">🕹️ Joystick</button>
+        <button class="tab-btn" data-tab="tab-terminal">📟 Terminal</button>
+    </nav>
+
+    <!-- Tab 1: Customizable Grid Remote -->
+    <main id="tab-remote" class="tab-content active">
+        <div id="edit-banner" class="edit-banner hidden">
+            Edit Mode Active: Tap any button to customize or add new.
+        </div>
+        <div id="button-grid" class="button-grid"></div>
+        <button id="btn-add-control" class="add-btn hidden">+ Add Custom Button</button>
+    </main>
+
+    <!-- Tab 2: Virtual Joystick -->
+    <main id="tab-joystick" class="tab-content">
+        <div class="joystick-wrapper">
+            <div id="joystick-base" class="joystick-base">
+                <div id="joystick-stick" class="joystick-stick"></div>
+            </div>
+            <div class="joystick-readout">
+                Last Sent: <strong id="joy-cmd">S</strong>
+            </div>
+            <p class="hint">Sends F (Forward), B (Back), L (Left), R (Right), S (Stop)</p>
+        </div>
+    </main>
+
+    <!-- Tab 3: Serial Terminal -->
+    <main id="tab-terminal" class="tab-content">
+        <div id="terminal-output" class="terminal-output"></div>
+        <div class="terminal-input-bar">
+            <input type="text" id="terminal-input" placeholder="Enter command (e.g., F, 1, ON)...">
+            <button id="btn-send-serial" class="primary-btn">Send</button>
+            <button id="btn-clear-serial" class="icon-btn">🗑️</button>
+        </div>
+    </main>
+
+    <!-- Bluetooth Device Scanner Modal -->
+    <div id="modal-devices" class="modal hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Select HC-05 Device</h2>
+                <button class="close-modal" data-target="modal-devices">✕</button>
+            </div>
+            <p class="hint">Ensure HC-05 is paired in Android Bluetooth settings first (PIN: 1234 or 0000).</p>
+            <div id="device-list" class="device-list"></div>
+            <button id="btn-refresh-devices" class="secondary-btn full-width">🔄 Refresh List</button>
+        </div>
+    </div>
+
+    <!-- Customize Button Modal -->
+    <div id="modal-edit" class="modal hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Customize Button</h2>
+                <button class="close-modal" data-target="modal-edit">✕</button>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <label>Button Label</label>
+                <input type="text" id="edit-label" required maxlength="15">
+
+                <label>Icon (Emoji)</label>
+                <select id="edit-icon">
+                    <option value="⬆️">⬆️ Up / Forward</option>
+                    <option value="⬇️">⬇️ Down / Back</option>
+                    <option value="⬅️">⬅️ Left</option>
+                    <option value="➡️">➡️ Right</option>
+                    <option value="🛑">🛑 Stop</option>
+                    <option value="💡">💡 Light / LED</option>
+                    <option value="⚡">⚡ Power</option>
+                    <option value="🔊">🔊 Horn / Buzzer</option>
+                    <option value="⚙️">⚙️ Gear / Mode</option>
+                    <option value="🚀">🚀 Boost</option>
+                </select>
+
+                <label>Serial Command (Sent on Press)</label>
+                <input type="text" id="edit-cmd" required maxlength="20">
+
+                <label>Release Command (Optional - e.g. 'S' on release)</label>
+                <input type="text" id="edit-release-cmd" placeholder="Leave blank for single tap" maxlength="20">
+
+                <label>Button Color</label>
+                <input type="color" id="edit-color" value="#2563eb">
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-delete-control" class="danger-btn">Delete</button>
+                    <button type="submit" class="primary-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="cordova.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
